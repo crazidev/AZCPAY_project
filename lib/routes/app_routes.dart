@@ -1,10 +1,16 @@
-import 'package:crazibeat_s_application1/presentation/verify_email_one_screen/verify_email_one_screen.dart';
+import 'package:crazibeat_s_application1/screens/auth/create_pin_one_screen.dart';
+import 'package:crazibeat_s_application1/screens/auth/kyc_bvn_screen.dart';
+import 'package:crazibeat_s_application1/screens/auth/kyc_document_screen.dart';
+import 'package:crazibeat_s_application1/screens/auth/kyc_image_screen.dart';
+import 'package:crazibeat_s_application1/screens/auth/verify_email_one_screen.dart';
 import 'package:crazibeat_s_application1/presentation/verify_email_screen/verify_email_screen.dart';
 import 'package:crazibeat_s_application1/screens/auth/create_account_screen.dart';
 import 'package:crazibeat_s_application1/screens/auth/log_in_screen.dart';
 import 'package:crazibeat_s_application1/screens/onboarding/onboarding.dart';
 import 'package:crazibeat_s_application1/screens/onboarding/onboarding_one_screen.dart';
 import 'package:get/route_manager.dart';
+
+import '../screens/auth/create_pin_two_screen.dart';
 
 //
 class AppRoutes {
@@ -27,7 +33,32 @@ class AppRoutes {
     GetPage(
       name: AppLinks.verifyEmailScreen,
       page: () => VerifyEmailOneScreen(),
-      transition: Transition.leftToRight,
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: AppLinks.createPinOneScreen,
+      page: () => CreatePinOneScreen(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: AppLinks.createPinTwoScreen,
+      page: () => CreatePinTwoScreen(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: AppLinks.kycImageScreen,
+      page: () => KycImageScreen(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: AppLinks.kycBvnScreen,
+      page: () => KycBvnScreen(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: AppLinks.kycDocumentScreen,
+      page: () => KycDocumentScreen(),
+      transition: Transition.rightToLeft,
     ),
   ];
 }

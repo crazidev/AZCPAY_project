@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 
+import '../../routes/app_routes.dart';
 import 'components/customTextField.dart';
 
 class LogInScreen extends StatefulWidget {
@@ -194,7 +195,10 @@ class _LogInScreenState extends State<LogInScreen> {
                       textAlign: TextAlign.left,
                     ),
                     TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.toNamed(AppLinks.createAccountScreen,
+                              preventDuplicates: true);
+                        },
                         child: Text(
                           "Create Account",
                           style: TextStyle(

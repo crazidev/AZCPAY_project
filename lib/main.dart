@@ -1,11 +1,10 @@
-import 'package:crazibeat_s_application1/presentation/verify_email_one_screen/verify_email_one_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'controllers/customScrollBehavior.dart';
 import 'routes/app_routes.dart';
-import 'screens/onboarding/onboarding.dart';
+import 'screens/auth/kyc_image_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,13 +20,13 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'crazibeat_s_application1',
       debugShowCheckedModeBanner: false,
-      home: VerifyEmailOneScreen(),
+      // home: KycImageScreen(),
       scrollBehavior: MyCustomScrollBehavior(),
-      // initialRoute: AppLinks.onboardingScreen,
-      // getPages: AppRoutes.pages,
+      initialRoute: AppLinks.onboardingScreen,
+      getPages: AppRoutes.pages,
       theme: ThemeData(
-        brightness: Brightness.dark,
-      ),
+          // brightness: Brightness.dark,
+          ),
     );
   }
 }

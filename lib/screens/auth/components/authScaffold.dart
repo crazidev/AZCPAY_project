@@ -9,8 +9,15 @@ import '../../../core/utils/size_utils.dart';
 import '../../../widgets/custom_image_view.dart';
 
 class authScaffold extends StatelessWidget {
-  const authScaffold({Key? key, required this.child}) : super(key: key);
+  const authScaffold(
+      {Key? key,
+      required this.child,
+      this.centerWidget,
+      this.backButton = true})
+      : super(key: key);
   final Widget child;
+  final Widget? centerWidget;
+  final bool? backButton;
 
   @override
   Widget build(BuildContext context) {
@@ -19,19 +26,23 @@ class authScaffold extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: Padding(
-          padding: getPadding(
-            left: 25,
-          ),
-          child: IconButton(
-            onPressed: () {
-              Get.back();
-            },
-            icon: CustomImageView(
-              svgPath: ImageConstant.imgArrowleft,
-            ),
-          ),
-        ),
+        centerTitle: true,
+        title: centerWidget,
+        leading: backButton == false
+            ? Container()
+            : Padding(
+                padding: getPadding(
+                  left: 25,
+                ),
+                child: IconButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  icon: CustomImageView(
+                    svgPath: ImageConstant.imgArrowleft,
+                  ),
+                ),
+              ),
       ),
     );
   }

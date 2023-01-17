@@ -161,6 +161,7 @@ class CustomTextField extends StatelessWidget {
     this.inputFormatters,
     this.textInputAction,
     this.infoText,
+    this.suffix,
   }) : super(key: key);
 
   final String? hintText;
@@ -171,6 +172,7 @@ class CustomTextField extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
   final TextInputAction? textInputAction;
   final Map<dynamic, bool>? infoText;
+  final Widget? suffix;
 
   @override
   Widget build(BuildContext context) {
@@ -187,76 +189,86 @@ class CustomTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: getHorizontalSize(
-            350.00,
-          ),
-          margin: getMargin(
-            left: 7,
-            top: 27,
-          ),
-          padding: getPadding(
-            left: 20,
-            top: 11,
-            right: 10,
-            bottom: 11,
-          ),
-          decoration: BoxDecoration(
-            color: Theme.of(context).brightness.name == "dark"
-                ? isError
-                    ? ColorConstant.red90026
-                    : null
-                : isError
-                    ? ColorConstant.red90026
-                    : ColorConstant.blue50,
-            borderRadius: BorderRadius.circular(
-              getHorizontalSize(
-                16.00,
-              ),
-            ),
-            border: Border.all(
-              color: isError ? ColorConstant.red500 : ColorConstant.blue300,
-              width: getHorizontalSize(
-                1.00,
-              ),
-            ),
-          ),
-          child: Column(
-            // mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: getPadding(top: 1, bottom: 3),
-                child: Text(
-                  "$label",
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: ColorConstant.gray600,
-                    fontSize: getFontSize(
-                      12,
+        Row(
+          children: [
+            Flexible(
+              child: Container(
+                width: getHorizontalSize(
+                  350.00,
+                ),
+                margin: getMargin(
+                  left: 7,
+                  top: 27,
+                ),
+                padding: getPadding(
+                  left: 20,
+                  top: 11,
+                  right: 10,
+                  bottom: 11,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).brightness.name == "dark"
+                      ? isError
+                          ? ColorConstant.red90026
+                          : null
+                      : isError
+                          ? ColorConstant.red90026
+                          : ColorConstant.blue50,
+                  borderRadius: BorderRadius.circular(
+                    getHorizontalSize(
+                      16.00,
                     ),
-                    fontFamily: 'Chivo',
-                    fontWeight: FontWeight.w400,
-                    height: 1.25,
+                  ),
+                  border: Border.all(
+                    color:
+                        isError ? ColorConstant.red500 : ColorConstant.blue300,
+                    width: getHorizontalSize(
+                      1.00,
+                    ),
                   ),
                 ),
+                child: Column(
+                  // mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: getPadding(top: 1, bottom: 3),
+                      child: Text(
+                        "$label",
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: ColorConstant.gray600,
+                          fontSize: getFontSize(
+                            12,
+                          ),
+                          fontFamily: 'Chivo',
+                          fontWeight: FontWeight.w400,
+                          height: 1.25,
+                        ),
+                      ),
+                    ),
+                    TextField(
+                      controller: controller,
+                      keyboardType: keyboardType,
+                      inputFormatters: inputFormatters,
+                      textInputAction: textInputAction,
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          filled: false,
+                          isDense: true,
+                          hintText: hintText,
+                          hintStyle: TextStyle(fontSize: fontsize)),
+                    ),
+                  ],
+                ),
               ),
-              TextField(
-                controller: controller,
-                keyboardType: keyboardType,
-                inputFormatters: inputFormatters,
-                textInputAction: textInputAction,
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    filled: false,
-                    isDense: true,
-                    hintText: hintText,
-                    hintStyle: TextStyle(fontSize: fontsize)),
-              ),
-            ],
-          ),
+            ),
+            Container(
+              child: suffix,
+            )
+          ],
         ),
         info == ""
             ? Container()

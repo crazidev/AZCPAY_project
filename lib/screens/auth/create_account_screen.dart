@@ -233,7 +233,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   ),
                   shape: ButtonShape.RoundedBorder20,
                   onTap: () {
+                    Get.snackbar("", "Registeration successfull",
+                        backgroundColor: Colors.green);
                     submitRegistration();
+                    ;
                   },
                 ),
               ],
