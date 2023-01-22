@@ -1,0 +1,11 @@
+status: empty = 0, uploaded = 1, verified = 2
+user {
+    bvn {
+        status:
+    }
+    kyc {
+        status
+        
+    }
+    pin_status: bool
+}

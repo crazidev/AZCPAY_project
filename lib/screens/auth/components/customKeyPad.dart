@@ -37,7 +37,7 @@ class CustomKeyPad extends StatelessWidget {
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               crossAxisSpacing: 10.0,
-              mainAxisSpacing: 10.0,
+              mainAxisSpacing: 0.0,
               childAspectRatio: 1.3),
           itemBuilder: (BuildContext context, int index) {
             return InkWell(
@@ -56,11 +56,8 @@ class CustomKeyPad extends StatelessWidget {
                 }
               },
               child: Container(
-                decoration: BoxDecoration(
-                    color: numbers[index] == "del" || numbers[index] == ""
-                        ? Colors.transparent
-                        : Colors.grey.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(500)),
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(500)),
                 child: Center(
                     child: numbers[index] == "del"
                         ? Icon(Icons.backspace)

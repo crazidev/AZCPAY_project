@@ -16,12 +16,12 @@ class OTPnumberContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: getHorizontalSize(
-        33.00,
+        40.00,
       ),
       height: getHorizontalSize(
-        33.00,
+        45.00,
       ),
-      margin: getMargin(left: 2, right: 2),
+      margin: getMargin(left: 3, right: 3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(
           getHorizontalSize(
@@ -29,7 +29,8 @@ class OTPnumberContainer extends StatelessWidget {
           ),
         ),
         border: Border.all(
-          color: ColorConstant.gray500,
+          color:
+              number!.isEmpty ? ColorConstant.gray500 : ColorConstant.blue300,
           width: getHorizontalSize(
             1.00,
           ),
@@ -41,7 +42,7 @@ class OTPnumberContainer extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.left,
           style: TextStyle(
-            color: ColorConstant.gray500,
+            color: ColorConstant.blue300,
             fontSize: getFontSize(
               16,
             ),
@@ -85,7 +86,7 @@ class PinContainer extends StatelessWidget {
             ? Container()
             : Icon(
                 Icons.circle,
-                color: Colors.grey,
+                color: ColorConstant.blue300,
                 size: 10,
               ),
       ),

@@ -19,9 +19,8 @@ class CreatePinTwoScreen extends StatelessWidget {
       child: Container(
         padding: getPadding(
           left: 30,
-          top: 12,
           right: 30,
-          bottom: 12,
+          bottom: 30,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,7 +83,7 @@ class CreatePinTwoScreen extends StatelessWidget {
                   _otp.length > 5 ? _otp.elementAt(5).toString() : "";
               return Padding(
                 padding: getPadding(
-                  top: 64,
+                  top: 30,
                 ),
                 child: Container(
                   decoration: BoxDecoration(

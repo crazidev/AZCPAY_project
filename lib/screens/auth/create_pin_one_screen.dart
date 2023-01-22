@@ -15,13 +15,12 @@ class CreatePinOneScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return authScaffold(
-      backButton: false,
+      backButton: true,
       child: Container(
         padding: getPadding(
           left: 30,
-          top: 12,
           right: 30,
-          bottom: 12,
+          bottom: 30,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,9 +46,6 @@ class CreatePinOneScreen extends StatelessWidget {
               ),
             ),
             Container(
-              width: getHorizontalSize(
-                308.00,
-              ),
               margin: getMargin(
                 left: 5,
                 top: 11,
@@ -84,11 +80,13 @@ class CreatePinOneScreen extends StatelessWidget {
                   _otp.length > 5 ? _otp.elementAt(5).toString() : "";
               return Padding(
                 padding: getPadding(
-                  top: 64,
+                  top: 30,
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: _otp.isEmpty
+                        ? Colors.grey.withOpacity(0.1)
+                        : ColorConstant.blue50,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Wrap(

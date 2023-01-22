@@ -1,12 +1,15 @@
+import 'dart:convert';
+
 import 'package:crazibeat_s_application1/controllers/authController.dart';
 import 'package:crazibeat_s_application1/core/app_export.dart';
 import 'package:crazibeat_s_application1/screens/auth/components/authScaffold.dart';
 import 'package:crazibeat_s_application1/widgets/custom_button.dart';
-import 'package:crazibeat_s_application1/widgets/custom_icon_button.dart';
+import 'package:crazibeat_s_application1/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 
+import '../../data/api/api_client.dart';
 import '../../routes/app_routes.dart';
 import 'components/customTextField.dart';
 
@@ -28,9 +31,14 @@ class _LogInScreenState extends State<LogInScreen> {
     "": false,
   };
 
+  bool isLoading = false;
+
   bool validateEmail() {
     if (emailController.value.text.isEmpty) {
       emailInfo = {"Email required": true};
+      return false;
+    } else if (!emailController.value.text.isEmail) {
+      emailInfo = {"Invalid Email Address": true};
       return false;
     } else {
       emailInfo = {"": false};
@@ -44,18 +52,40 @@ class _LogInScreenState extends State<LogInScreen> {
       return false;
     } else {
       passInfo = {"": false};
-      return false;
+      return true;
     }
   }
 
   void submitLogin() {
-    bool noError = true;
+    if (validateEmail() && validatePass()) {
+      setState(() {
+        isLoading = true;
+      });
 
-    if (validateEmail() || validatePass()) {
-    } else {
-      noError = false;
-    }
-    setState(() {});
+      AuthController()
+          .login(
+              email: emailController.value.text.trim().toLowerCase(),
+              password: passController.value.text)
+          .then((status) async {
+        if (status.body != null) {
+          if (status.isOk && status.body["status"]) {
+            var token = status.body["token"];
+            var userDetails = status.body["user"];
+            await AuthController().saveToken(token);
+            await AuthController().saveDetails(json.encode(userDetails));
+            showSnackBar("Login successful");
+          } else if (status.unauthorized) {
+            passInfo = {"Incorrect password": true};
+          } else if (status.body["errors"].toString().contains("email")) {
+            emailInfo = {status.body["errors"]["email"][0]: true};
+          }
+        }
+      }).whenComplete(() {
+        setState(() {
+          isLoading = false;
+        });
+      });
+    } else {}
   }
 
   @override
@@ -157,18 +187,28 @@ class _LogInScreenState extends State<LogInScreen> {
                       ),
                     ),
                   )),
-              CustomButton(
-                height: 48,
-                width: 359,
-                text: "Login",
-                margin: getMargin(
-                  left: 5,
-                  top: 66,
-                ),
-                onTap: () {
-                  submitLogin();
-                },
-              ),
+              isLoading
+                  ? Container(
+                      margin: getMargin(
+                        left: 5,
+                        top: 66,
+                      ),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : CustomButton(
+                      height: 48,
+                      width: 359,
+                      text: "Login",
+                      margin: getMargin(
+                        left: 5,
+                        top: 66,
+                      ),
+                      onTap: () {
+                        submitLogin();
+                      },
+                    ),
               Padding(
                 padding: getPadding(
                   top: 22,

@@ -1,16 +1,18 @@
+import 'dart:convert';
+
+import 'package:crazibeat_s_application1/controllers/authController.dart';
 import 'package:crazibeat_s_application1/core/app_export.dart';
 import 'package:crazibeat_s_application1/routes/app_routes.dart';
 import 'package:crazibeat_s_application1/screens/auth/components/authScaffold.dart';
 import 'package:crazibeat_s_application1/screens/auth/components/customTextField.dart';
-import 'package:crazibeat_s_application1/screens/auth/controller/createAccountController.dart';
 import 'package:crazibeat_s_application1/widgets/custom_button.dart';
-import 'package:crazibeat_s_application1/widgets/custom_icon_button.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 
 import '../../widgets/custom_checkbox.dart';
+import '../../widgets/custom_snackbar.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   @override
@@ -22,28 +24,26 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController passController = TextEditingController();
+  TextEditingController pass2Controller = TextEditingController();
 
   RxBool showpassword = true.obs;
 
   RxBool checkbox = false.obs;
   var emailError = false;
+  bool isLoading = false;
 
-  Map<dynamic, bool> emailInfo = {
-    "": false,
-  };
-  Map<dynamic, bool> nameInfo = {
-    "": false,
-  };
-  Map<dynamic, bool> phoneInfo = {
-    "": false,
-  };
-  Map<dynamic, bool> passInfo = {
-    "": false,
-  };
+  Map<dynamic, bool> emailInfo = {"": false};
+  Map<dynamic, bool> nameInfo = {"": false};
+  Map<dynamic, bool> phoneInfo = {"": false};
+  Map<dynamic, bool> passInfo = {"": false};
+  Map<dynamic, bool> pass2Info = {"": false};
 
   bool validateEmail() {
     if (emailController.value.text.isEmpty) {
       emailInfo = {"Email required": true};
+      return false;
+    } else if (!emailController.value.text.isEmail) {
+      emailInfo = {"Invalid Email Address": true};
       return false;
     } else {
       emailInfo = {"": false};
@@ -57,7 +57,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       return false;
     } else {
       nameInfo = {"": false};
-      return false;
+      return true;
     }
   }
 
@@ -67,16 +67,34 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       return false;
     } else {
       phoneInfo = {"": false};
-      return false;
+      return true;
     }
   }
 
   bool validatePass() {
-    if (phoneController.value.text.isEmpty) {
+    if (passController.value.text.isEmpty) {
       passInfo = {"Password required": true};
       return false;
     } else {
       passInfo = {"": false};
+    }
+    if (pass2Controller.value.text.isEmpty ||
+        identical(pass2Controller, passController)) {
+      passInfo = {"": false};
+      pass2Info = {"Password does not match": true};
+      return false;
+    } else {
+      pass2Info = {"": false};
+      return true;
+    }
+  }
+
+  bool validateAccept() {
+    if (checkbox.isTrue) {
+      acceptInfo = "";
+      return true;
+    } else {
+      acceptInfo = "You didn't agree to Policy and Rules of AZCpay";
       return false;
     }
   }
@@ -84,21 +102,62 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   void submitRegistration() {
     bool noError = true;
 
-    // if (validateName() &&
-    //     validateEmail() &&
-    //     validatePhone() &&
-    //     validatePass()) {
-    // } else {
-    //   noError = false;
-    // }
+    if (!validateName()) {
+      noError = false;
+    }
+    if (!validateEmail()) {
+      noError = false;
+    }
+    if (!validatePhone()) {
+      noError = false;
+    }
+    if (!validatePass()) {
+      noError = false;
+    }
+    if (!validateAccept()) {
+      noError = false;
+    }
+
     setState(() {});
     if (noError == true) {
-      Get.toNamed(
-        AppLinks.verifyEmailScreen,
-        preventDuplicates: true,
-      );
+      setState(() {
+        isLoading = true;
+      });
+      AuthController()
+          .register(
+        name: nameController.value.text.trim(),
+        email: emailController.value.text.trim(),
+        phone: phoneController.value.text.trim(),
+        password: passController.value.text.trim(),
+        username: emailController.value.text.trim(),
+      )
+          .then((status) async {
+        if (status.body != null) {
+          if (status.isOk && status.body["status"]) {
+            var token = status.body["token"];
+            var userDetails = status.body["user"];
+            await AuthController().saveToken(token);
+            await AuthController().saveDetails(json.encode(userDetails));
+            showSnackBar("Registration successful");
+          } else if (status.body["errors"]
+              .toString()
+              .contains("email has already been taken")) {
+            emailInfo = {status.body["errors"][0]: true};
+          } else if (status.body["errors"]
+              .toString()
+              .contains("phone has already been taken")) {
+            phoneInfo = {status.body["errors"][0]: true};
+          }
+        }
+      }).whenComplete(() {
+        setState(() {
+          isLoading = false;
+        });
+      });
     }
   }
+
+  var acceptInfo = "";
 
   @override
   Widget build(BuildContext context) {
@@ -108,9 +167,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           width: size.width,
           padding: getPadding(
             left: 30,
-            top: 12,
             right: 30,
-            bottom: 12,
+            bottom: 30,
           ),
           child: Form(
             child: Column(
@@ -120,7 +178,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 Padding(
                   padding: getPadding(
                     left: 2,
-                    top: 14,
                   ),
                   child: Text(
                     "Create a Secure Account",
@@ -193,6 +250,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         ));
                   }),
                 ),
+                CustomPassField(
+                  showpassword: showpassword,
+                  controller: pass2Controller,
+                  label: 'Comfirm Password',
+                  infoText: pass2Info,
+                ),
                 Obx(() => Padding(
                       padding: getPadding(top: 20),
                       child: Row(
@@ -207,6 +270,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                           Flexible(
                             child: RichText(
                                 text: TextSpan(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(fontWeight: FontWeight.bold),
                               children: [
                                 TextSpan(text: "I agree to the "),
                                 TextSpan(
@@ -223,22 +290,47 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         ],
                       ),
                     )),
-                CustomButton(
-                  height: 48,
-                  width: 354,
-                  text: "Create account",
-                  margin: getMargin(
-                    top: 51,
-                    bottom: 5,
+                Padding(
+                  padding: getPadding(
+                    left: 12,
                   ),
-                  shape: ButtonShape.RoundedBorder20,
-                  onTap: () {
-                    Get.snackbar("", "Registeration successfull",
-                        backgroundColor: Colors.green);
-                    submitRegistration();
-                    ;
-                  },
+                  child: Text(
+                    "$acceptInfo",
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: ColorConstant.red500,
+                      fontSize: getFontSize(
+                        12,
+                      ),
+                      fontFamily: 'Chivo',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
                 ),
+                isLoading
+                    ? Container(
+                        margin: getMargin(
+                          top: 20,
+                        ),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : CustomButton(
+                        height: 48,
+                        width: 354,
+                        text: "Create account",
+                        margin: getMargin(
+                          top: 20,
+                          bottom: 5,
+                        ),
+                        shape: ButtonShape.RoundedBorder20,
+                        onTap: () {
+                          submitRegistration();
+                          ;
+                        },
+                      ),
               ],
             ),
           ),

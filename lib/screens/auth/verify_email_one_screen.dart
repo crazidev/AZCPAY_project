@@ -11,10 +11,17 @@ import 'components/OTPnumberrContainer.dart';
 import 'components/customKeyPad.dart';
 
 class VerifyEmailOneScreen extends StatelessWidget {
+  RxList _otp = [].obs;
+  var ErrorMsg = "".obs;
+  submitEmailVerification() {
+    if (_otp.length != 6) {
+    } else {
+      Get.toNamed(AppLinks.createPinOneScreen);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    RxList _otp = [].obs;
-
     return authScaffold(
       centerWidget: Column(
         children: [
@@ -49,9 +56,8 @@ class VerifyEmailOneScreen extends StatelessWidget {
       child: Padding(
         padding: getPadding(
           left: 30,
-          top: 12,
           right: 30,
-          bottom: 12,
+          bottom: 30,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,7 +136,7 @@ class VerifyEmailOneScreen extends StatelessWidget {
                     text: "Next",
                     margin: getMargin(),
                     onTap: () {
-                      Get.toNamed(AppLinks.createPinOneScreen);
+                      submitEmailVerification();
                     },
                   ),
                 ),
